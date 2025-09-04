@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // ---------- Types ----------
 type Risk = {
@@ -23,10 +23,10 @@ type Results = {
   notKilledCount: number;
 };
 
-// ---------- Worker code as a string (PLAIN JS inside) ----------
+// ---------- Worker code as a string (typed to satisfy TS) ----------
 const workerCode = () => {
-  const makeMulberry32 = (seed) => {
-    return function rng() {
+  const makeMulberry32 = (seed: number) => {
+    return function rng(): number {
       seed |= 0;
       seed = (seed + 0x6D2B79F5) | 0;
       let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
@@ -35,7 +35,7 @@ const workerCode = () => {
     };
   };
 
-  const sampleTriangular = (a, m, b, rng) => {
+  const sampleTriangular = (a: number, m: number, b: number, rng: () => number): number => {
     if (!(a < b) || !(a <= m && m <= b)) return 0; // guard invalid
     const u = rng();
     const k = (m - a) / Math.max(1e-12, b - a);
@@ -43,9 +43,9 @@ const workerCode = () => {
     return b - Math.sqrt((1 - u) * (b - a) * (b - m));
   };
 
-  const percentile = (arr, p) => {
+  const percentile = (arr: number[], p: number): number => {
     if (!arr.length) return 0;
-    const a = arr.slice().sort((x, y) => x - y);
+    const a = arr.slice().sort((x: number, y: number) => x - y);
     const idx = (a.length - 1) * p;
     const lo = Math.floor(idx);
     const hi = Math.ceil(idx);
@@ -54,15 +54,15 @@ const workerCode = () => {
     return a[lo] * (1 - w) + a[hi] * w;
   };
 
-  self.onmessage = (e) => {
-    const data = e.data || {};
+  self.onmessage = (e: MessageEvent) => {
+    const data = (e as any).data || {};
     if (data.cmd !== "run") return;
 
     const seed = Number(data.seed) || (Date.now() % 2147483647);
     const rng = makeMulberry32(seed);
 
-    const risks = data.risks || [];
-    const R = [];
+    const risks = data.risks || [] as any[];
+    const R: { p: number; a: number; m: number; b: number; kill: number }[] = [];
     for (let i = 0; i < risks.length; i++) {
       const r = risks[i] || {};
       const p = Math.max(0, Math.min(1, (Number(r.likelihood) || 0) / 100));
@@ -82,7 +82,7 @@ const workerCode = () => {
     let killedCount = 0;
     let notKilledCount = 0;
     let sumDelayNotKilled = 0;
-    const lateDelays = [];
+    const lateDelays: number[] = [];
 
     for (let i = 0; i < N; i++) {
       let anyKill = false;
@@ -104,7 +104,7 @@ const workerCode = () => {
         sumDelayNotKilled += totalDelay;
         if (totalDelay > slack) lateDelays.push(totalDelay);
       }
-      if (i % 1000 === 0) self.postMessage({ type: "progress", done: i, total: N });
+      if (i % 1000 === 0) (self as any).postMessage({ type: "progress", done: i, total: N });
     }
 
     const successPct = successCount / N;
@@ -114,7 +114,7 @@ const workerCode = () => {
     const p85Late = percentile(lateDelays, 0.85);
     const p90Late = percentile(lateDelays, 0.9);
 
-    self.postMessage({
+    (self as any).postMessage({
       type: "done",
       results: {
         successPct,
@@ -146,10 +146,10 @@ function useWorker() {
     URL.revokeObjectURL(url);
 
     w.onmessage = (e: MessageEvent) => {
-      if (e.data?.type === "progress") {
-        setProgress({ done: e.data.done, total: e.data.total });
-      } else if (e.data?.type === "done") {
-        setResults(e.data.results);
+      if ((e as any).data?.type === "progress") {
+        setProgress({ done: (e as any).data.done, total: (e as any).data.total });
+      } else if ((e as any).data?.type === "done") {
+        setResults((e as any).data.results);
         setRunning(false);
         setProgress(null);
       }

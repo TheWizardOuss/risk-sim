@@ -211,6 +211,25 @@ body {
 .meta { font-size: 12px; color: var(--muted); }
 .notes { font-size: 12px; color: var(--muted); }
 
+/* --- Small icon buttons (for row actions) --- */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+}
+.icon-btn:hover {
+  background: #f3f4f6;
+  color: #b91c1c;
+}
+.icon-cell { width: 40px; }
+
 /* Remove focus outline on number inputs spinners for consistency */
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {

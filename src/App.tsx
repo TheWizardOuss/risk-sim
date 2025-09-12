@@ -254,6 +254,10 @@ export default function RiskSimulatorApp() {
     run(prepared as any, iters, slackDays, sd);
   };
 
+  const clearRow = (idx: number) => {
+    setRisks(prev => prev.map((x, i) => (i === idx ? emptyRisk() : x)));
+  };
+
   const fmtPct = (x?: number | null) => (x == null ? "—" : (x * 100).toFixed(1) + "%");
   const fmtNum = (x?: number | null) => (x == null ? "—" : (Math.round((x as number) * 10) / 10).toString());
 
@@ -297,6 +301,7 @@ export default function RiskSimulatorApp() {
         <table className="table">
           <thead>
             <tr>
+              <th className="icon-cell"></th>
               <th>#</th>
               <th>Risk</th>
               <th>Likelihood %</th>
@@ -310,6 +315,12 @@ export default function RiskSimulatorApp() {
           <tbody>
             {risks.map((r, idx) => (
               <tr key={idx}>
+                <td className="icon-cell">
+                  <button className="icon-btn" title={`Clear row ${idx + 1}`} aria-label={`Clear row ${idx + 1}`}
+                          onClick={() => clearRow(idx)}>
+                    ×
+                  </button>
+                </td>
                 <td>{idx + 1}</td>
                 <td>
                   <input className="input input-sm" style={{ width: 260 }} value={r.name}

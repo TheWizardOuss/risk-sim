@@ -339,14 +339,14 @@ export default function RiskSimulatorApp() {
           <thead>
             <tr>
               <th className="icon-cell"></th>
-              <th>#</th>
-              <th>Risk</th>
-              <th>Likelihood %</th>
-              <th>Min (days)</th>
-              <th>Most likely</th>
-              <th>Max (days)</th>
-              <th>Kill (0/1)</th>
-              <th>Notes</th>
+              <th title="Row number">#</th>
+              <th title="Short name of the risk (e.g., Vendor part late). Free text.">Risk</th>
+              <th title="Probability that this risk occurs during the period (0–100).">Likelihood %</th>
+              <th title="Best-case delay in days if the risk occurs (triangular minimum). Must be ≤ Most likely ≤ Max.">Min (days)</th>
+              <th title="Most likely delay in days if the risk occurs (triangular mode). Must be between Min and Max.">Most likely</th>
+              <th title="Worst-case delay in days if the risk occurs (triangular maximum). Must be ≥ Most likely.">Max (days)</th>
+              <th title="Set to 1 if the risk cancels the project whenever it occurs; 0 otherwise. When 1, delay fields are ignored.">Kill (0/1)</th>
+              <th title="Optional notes or clarifications about the risk.">Notes</th>
             </tr>
           </thead>
           <tbody>
@@ -361,26 +361,32 @@ export default function RiskSimulatorApp() {
                 <td>{idx + 1}</td>
                 <td>
                   <input className="input input-sm" style={{ width: 260 }} value={r.name}
+                         title="Short name of the risk (e.g., Vendor part late)."
                          onChange={(e) => setRisks(prev => prev.map((x, i) => i===idx? { ...x, name: e.target.value }: x))} />
                 </td>
                 <td>
                   <input type="number" min={0} max={100} className="input input-sm" style={{ width: 110 }} value={r.likelihood as any}
+                         title="Probability this risk occurs (0–100)."
                          onChange={(e) => setRisks(prev => prev.map((x,i)=> i===idx? { ...x, likelihood: e.target.value === ''? '' : Number(e.target.value) }: x))} />
                 </td>
                 <td>
                   <input type="number" min={0} className="input input-sm" style={{ width: 100 }} value={r.min as any}
+                         title="Best-case delay if risk occurs (triangular minimum)."
                          onChange={(e) => setRisks(prev => prev.map((x,i)=> i===idx? { ...x, min: e.target.value === ''? '' : Number(e.target.value) }: x))} />
                 </td>
                 <td>
                   <input type="number" min={0} className="input input-sm" style={{ width: 100 }} value={r.mode as any}
+                         title="Most likely delay if risk occurs (triangular mode)."
                          onChange={(e) => setRisks(prev => prev.map((x,i)=> i===idx? { ...x, mode: e.target.value === ''? '' : Number(e.target.value) }: x))} />
                 </td>
                 <td>
                   <input type="number" min={0} className="input input-sm" style={{ width: 100 }} value={r.max as any}
+                         title="Worst-case delay if risk occurs (triangular maximum)."
                          onChange={(e) => setRisks(prev => prev.map((x,i)=> i===idx? { ...x, max: e.target.value === ''? '' : Number(e.target.value) }: x))} />
                 </td>
                 <td>
                   <input type="number" min={0} max={1} className="input input-sm" style={{ width: 80 }} value={r.kill as any}
+                         title="1 = project is canceled if this risk occurs; 0 = not canceling. When 1, delay fields are ignored."
                          onChange={(e) => {
                            const val = e.target.value === '' ? '' : (Number(e.target.value) ? 1 : 0);
                            setRisks(prev => prev.map((x,i)=> i===idx? { ...x, kill: val as any }: x))
@@ -388,6 +394,8 @@ export default function RiskSimulatorApp() {
                 </td>
                 <td>
                   <input className="input input-sm" style={{ width: 360 }} value={r.notes || ''}
+                         placeholder="Optional notes (assumptions, sources, scope, etc.)"
+                         title="Optional notes or clarifications about the risk."
                          onChange={(e) => setRisks(prev => prev.map((x,i)=> i===idx? { ...x, notes: e.target.value }: x))} />
                 </td>
               </tr>

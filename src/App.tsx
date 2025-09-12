@@ -258,88 +258,88 @@ export default function RiskSimulatorApp() {
   const fmtNum = (x?: number | null) => (x == null ? "—" : (Math.round((x as number) * 10) / 10).toString());
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <h1 className="text-2xl font-bold mb-2">Project Risk Simulator</h1>
-      <p className="text-sm text-gray-600 mb-6">Up to 50 risks · 20,000 simulations · Client-side only (no backend)</p>
+    <div className="container">
+      <h1 className="page-title">Project Risk Simulator</h1>
+      <p className="subtitle">Up to 50 risks · 20,000 simulations · Client-side only (no backend)</p>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="p-4 rounded-2xl border bg-white shadow-sm">
-          <label className="block text-sm font-medium">Slack (days)</label>
-          <input type="number" className="mt-1 w-full border rounded-lg px-3 py-2" value={slack}
+      <div className="grid-3 mb-6">
+        <div className="card">
+          <label className="label">Slack (days)</label>
+          <input type="number" className="input" value={slack}
                  onChange={(e) => setSlack(Number(e.target.value))} min={0} />
         </div>
-        <div className="p-4 rounded-2xl border bg-white shadow-sm">
-          <label className="block text-sm font-medium">Iterations (max 20,000)</label>
-          <input type="number" className="mt-1 w-full border rounded-lg px-3 py-2" value={iterations}
+        <div className="card">
+          <label className="label">Iterations (max 20,000)</label>
+          <input type="number" className="input" value={iterations}
                  onChange={(e) => setIterations(Number(e.target.value))} min={100} max={20000} step={100} />
         </div>
-        <div className="p-4 rounded-2xl border bg-white shadow-sm">
-          <label className="block text-sm font-medium">Random Seed (optional)</label>
-          <input type="number" className="mt-1 w-full border rounded-lg px-3 py-2" value={seed}
+        <div className="card">
+          <label className="label">Random Seed (optional)</label>
+          <input type="number" className="input" value={seed}
                  onChange={(e) => setSeed(e.target.value)} placeholder="e.g., 12345" />
         </div>
       </div>
 
-      <div className="mb-3 flex flex-wrap gap-2">
-        <button onClick={addRow} disabled={!canAddRow} className="px-3 py-2 rounded-lg bg-black text-white disabled:opacity-40">+ Add Row</button>
-        <button onClick={add5} disabled={!canAddRow} className="px-3 py-2 rounded-lg border">+ Add 5 Rows</button>
-        <button onClick={loadSample} className="px-3 py-2 rounded-lg border">Load Sample Risks</button>
-        <button onClick={clearAll} className="px-3 py-2 rounded-lg border">Clear All</button>
-        <div className="flex-1" />
+      <div className="button-row">
+        <button onClick={addRow} disabled={!canAddRow} className="btn btn-dark">+ Add Row</button>
+        <button onClick={add5} disabled={!canAddRow} className="btn btn-outline">+ Add 5 Rows</button>
+        <button onClick={loadSample} className="btn btn-outline">Load Sample Risks</button>
+        <button onClick={clearAll} className="btn btn-outline">Clear All</button>
+        <div className="spacer" />
         {!running ? (
-          <button onClick={handleRun} className="px-4 py-2 rounded-lg bg-green-600 text-white">Run Simulation</button>
+          <button onClick={handleRun} className="btn btn-success">Run Simulation</button>
         ) : (
-          <button onClick={stop} className="px-4 py-2 rounded-lg bg-red-600 text-white">Stop</button>
+          <button onClick={stop} className="btn btn-danger">Stop</button>
         )}
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border bg-white shadow-sm">
-        <table className="min-w-full text-sm">
-          <thead className="bg-gray-50">
+      <div className="table-container">
+        <table className="table">
+          <thead>
             <tr>
-              <th className="px-3 py-2 text-left">#</th>
-              <th className="px-3 py-2 text-left">Risk</th>
-              <th className="px-3 py-2 text-left">Likelihood %</th>
-              <th className="px-3 py-2 text-left">Min (days)</th>
-              <th className="px-3 py-2 text-left">Most likely</th>
-              <th className="px-3 py-2 text-left">Max (days)</th>
-              <th className="px-3 py-2 text-left">Kill (0/1)</th>
-              <th className="px-3 py-2 text-left">Notes</th>
+              <th>#</th>
+              <th>Risk</th>
+              <th>Likelihood %</th>
+              <th>Min (days)</th>
+              <th>Most likely</th>
+              <th>Max (days)</th>
+              <th>Kill (0/1)</th>
+              <th>Notes</th>
             </tr>
           </thead>
           <tbody>
             {risks.map((r, idx) => (
-              <tr key={idx} className={idx % 2 ? "bg-white" : "bg-gray-50/50"}>
-                <td className="px-3 py-2">{idx + 1}</td>
-                <td className="px-3 py-2">
-                  <input className="w-64 border rounded px-2 py-1" value={r.name}
+              <tr key={idx}>
+                <td>{idx + 1}</td>
+                <td>
+                  <input className="input input-sm" style={{ width: 260 }} value={r.name}
                          onChange={(e) => setRisks(prev => prev.map((x, i) => i===idx? { ...x, name: e.target.value }: x))} />
                 </td>
-                <td className="px-3 py-2">
-                  <input type="number" min={0} max={100} className="w-28 border rounded px-2 py-1" value={r.likelihood as any}
+                <td>
+                  <input type="number" min={0} max={100} className="input input-sm" style={{ width: 110 }} value={r.likelihood as any}
                          onChange={(e) => setRisks(prev => prev.map((x,i)=> i===idx? { ...x, likelihood: e.target.value === ''? '' : Number(e.target.value) }: x))} />
                 </td>
-                <td className="px-3 py-2">
-                  <input type="number" min={0} className="w-24 border rounded px-2 py-1" value={r.min as any}
+                <td>
+                  <input type="number" min={0} className="input input-sm" style={{ width: 100 }} value={r.min as any}
                          onChange={(e) => setRisks(prev => prev.map((x,i)=> i===idx? { ...x, min: e.target.value === ''? '' : Number(e.target.value) }: x))} />
                 </td>
-                <td className="px-3 py-2">
-                  <input type="number" min={0} className="w-24 border rounded px-2 py-1" value={r.mode as any}
+                <td>
+                  <input type="number" min={0} className="input input-sm" style={{ width: 100 }} value={r.mode as any}
                          onChange={(e) => setRisks(prev => prev.map((x,i)=> i===idx? { ...x, mode: e.target.value === ''? '' : Number(e.target.value) }: x))} />
                 </td>
-                <td className="px-3 py-2">
-                  <input type="number" min={0} className="w-24 border rounded px-2 py-1" value={r.max as any}
+                <td>
+                  <input type="number" min={0} className="input input-sm" style={{ width: 100 }} value={r.max as any}
                          onChange={(e) => setRisks(prev => prev.map((x,i)=> i===idx? { ...x, max: e.target.value === ''? '' : Number(e.target.value) }: x))} />
                 </td>
-                <td className="px-3 py-2">
-                  <input type="number" min={0} max={1} className="w-20 border rounded px-2 py-1" value={r.kill as any}
+                <td>
+                  <input type="number" min={0} max={1} className="input input-sm" style={{ width: 80 }} value={r.kill as any}
                          onChange={(e) => {
                            const val = e.target.value === '' ? '' : (Number(e.target.value) ? 1 : 0);
                            setRisks(prev => prev.map((x,i)=> i===idx? { ...x, kill: val as any }: x))
                          }} />
                 </td>
-                <td className="px-3 py-2">
-                  <input className="w-80 border rounded px-2 py-1" value={r.notes || ''}
+                <td>
+                  <input className="input input-sm" style={{ width: 360 }} value={r.notes || ''}
                          onChange={(e) => setRisks(prev => prev.map((x,i)=> i===idx? { ...x, notes: e.target.value }: x))} />
                 </td>
               </tr>
@@ -348,55 +348,55 @@ export default function RiskSimulatorApp() {
         </table>
       </div>
 
-      <div className="flex items-center gap-3 mt-4">
+      <div className="progress mt-4">
         {progress && running && (
           <>
-            <div className="w-48 h-2 bg-gray-200 rounded-full overflow-hidden">
-              <div className="h-full bg-black" style={{ width: `${(progress.done / progress.total) * 100}%` }} />
+            <div className="progress-track">
+              <div className="progress-bar" style={{ width: `${(progress.done / progress.total) * 100}%` }} />
             </div>
-            <div className="text-sm text-gray-600">{Math.floor((progress.done / progress.total) * 100)}% · {progress.done}/{progress.total}</div>
+            <div className="progress-text">{Math.floor((progress.done / progress.total) * 100)}% · {progress.done}/{progress.total}</div>
           </>
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-        <div className="p-4 rounded-2xl border bg-white shadow-sm">
-          <div className="text-xs text-gray-500">Likelihood of Success (meets Slack & not killed)</div>
-          <div className="text-2xl font-semibold">{results ? fmtPct(results.successPct) : "—"}</div>
+      <div className="stats-grid mt-6">
+        <div className="stat-card">
+          <div className="stat-label">Likelihood of Success (meets Slack & not killed)</div>
+          <div className="stat-value">{results ? fmtPct(results.successPct) : "—"}</div>
         </div>
-        <div className="p-4 rounded-2xl border bg-white shadow-sm">
-          <div className="text-xs text-gray-500">Expected Delay (when not killed)</div>
-          <div className="text-2xl font-semibold">{results ? fmtNum(results.expectedDelayNotKilled) : "—"} <span className="text-sm">days</span></div>
-          <div className="text-xs text-gray-500 mt-1">Includes small delays even if within Slack</div>
+        <div className="stat-card">
+          <div className="stat-label">Expected Delay (when not killed)</div>
+          <div className="stat-value">{results ? fmtNum(results.expectedDelayNotKilled) : "—"} <span className="stat-small">days</span></div>
+          <div className="stat-label" style={{ marginTop: 4 }}>Includes small delays even if within Slack</div>
         </div>
-        <div className="p-4 rounded-2xl border bg-white shadow-sm">
-          <div className="text-xs text-gray-500">Project canceled chance</div>
-          <div className="text-2xl font-semibold">{results ? fmtPct(results.killedPct) : "—"}</div>
+        <div className="stat-card">
+          <div className="stat-label">Project canceled chance</div>
+          <div className="stat-value">{results ? fmtPct(results.killedPct) : "—"}</div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-        <div className="p-4 rounded-2xl border bg-white shadow-sm">
-          <div className="text-xs text-gray-500">P50 of Delay (when late & not killed)</div>
-          <div className="text-2xl font-semibold">{results ? fmtNum(results.p50Late) : "—"} <span className="text-sm">days</span></div>
+      <div className="stats-grid mt-4">
+        <div className="stat-card">
+          <div className="stat-label">P50 of Delay (when late & not killed)</div>
+          <div className="stat-value">{results ? fmtNum(results.p50Late) : "—"} <span className="stat-small">days</span></div>
         </div>
-        <div className="p-4 rounded-2xl border bg-white shadow-sm">
-          <div className="text-xs text-gray-500">P85 of Delay (when late & not killed)</div>
-          <div className="text-2xl font-semibold">{results ? fmtNum(results.p85Late) : "—"} <span className="text-sm">days</span></div>
+        <div className="stat-card">
+          <div className="stat-label">P85 of Delay (when late & not killed)</div>
+          <div className="stat-value">{results ? fmtNum(results.p85Late) : "—"} <span className="stat-small">days</span></div>
         </div>
-        <div className="p-4 rounded-2xl border bg-white shadow-sm">
-          <div className="text-xs text-gray-500">P90 of Delay (when late & not killed)</div>
-          <div className="text-2xl font-semibold">{results ? fmtNum(results.p90Late) : "—"} <span className="text-sm">days</span></div>
+        <div className="stat-card">
+          <div className="stat-label">P90 of Delay (when late & not killed)</div>
+          <div className="stat-value">{results ? fmtNum(results.p90Late) : "—"} <span className="stat-small">days</span></div>
         </div>
       </div>
 
       {results && (
-        <div className="mt-4 text-xs text-gray-500">
+        <div className="meta mt-4">
           <div>Runs: {results.runs.toLocaleString()} · Not killed runs: {results.notKilledCount.toLocaleString()} · Late runs: {results.lateCount.toLocaleString()}</div>
         </div>
       )}
 
-      <div className="mt-8 text-xs text-gray-500">
+      <div className="notes mt-8">
         <p><strong>Notes</strong>: Likelihoods are per-risk independent Bernoulli events. Delays are sampled from a Triangular(min, mode, max) when the risk occurs. Success = not killed & total delay ≤ Slack.</p>
       </div>
     </div>

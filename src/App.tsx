@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { DonutGauge, Histogram, CDF, StackedBar, HBars } from './components/Charts';
 
 // ---------- Types ----------
 type Risk = {
@@ -21,6 +22,8 @@ type Results = {
   runs: number;
   lateCount: number;
   notKilledCount: number;
+  lateBins?: number[]; // histogram counts of late delays (> slack)
+  lateMax?: number; // max of late delays (x-axis max)
 };
 
 // ---------- Worker code as a string (typed to satisfy TS) ----------
@@ -114,6 +117,21 @@ const workerCode = () => {
     const p85Late = percentile(lateDelays, 0.85);
     const p90Late = percentile(lateDelays, 0.9);
 
+    // Build histogram of late delays to avoid sending large arrays
+    let lateBins: number[] = [];
+    let lateMax = 0;
+    if (lateDelays.length > 0) {
+      lateMax = Math.max(...lateDelays);
+      const BIN_COUNT = 20;
+      lateBins = Array(BIN_COUNT).fill(0);
+      const width = lateMax > 0 ? lateMax / BIN_COUNT : 1;
+      for (let i = 0; i < lateDelays.length; i++) {
+        const v = lateDelays[i];
+        const b = Math.min(BIN_COUNT - 1, Math.floor(v / Math.max(1e-12, width)));
+        lateBins[b]++;
+      }
+    }
+
     (self as any).postMessage({
       type: "done",
       results: {
@@ -126,6 +144,8 @@ const workerCode = () => {
         runs: N,
         lateCount: lateDelays.length,
         notKilledCount,
+        lateBins,
+        lateMax,
       },
     });
   };
@@ -260,6 +280,23 @@ export default function RiskSimulatorApp() {
 
   const fmtPct = (x?: number | null) => (x == null ? "—" : (x * 100).toFixed(1) + "%");
   const fmtNum = (x?: number | null) => (x == null ? "—" : (Math.round((x as number) * 10) / 10).toString());
+
+  // Risk impact (static expected contribution approximation for ranking)
+  const impact = risks
+    .filter(r => (r.name?.trim() || r.likelihood || r.min || r.mode || r.max || r.kill) !== "")
+    .map(r => {
+      const p = Math.max(0, Math.min(1, (Number(r.likelihood) || 0) / 100));
+      const a = Number(r.min) || 0;
+      const m = Number(r.mode) || 0;
+      const b = Number(r.max) || 0;
+      const kill = Number(r.kill) ? 1 : 0;
+      const expectedDelay = kill ? 0 : ((a + m + b) / 3) * p;
+      const cancelProb = kill ? p : 0;
+      return { name: r.name || "(untitled)", expectedDelay, cancelProb };
+    })
+    .filter(x => x.expectedDelay > 0 || x.cancelProb > 0)
+    .sort((x, y) => (y.expectedDelay + y.cancelProb) - (x.expectedDelay + x.cancelProb))
+    .slice(0, 8);
 
   return (
     <div className="container">
@@ -409,6 +446,61 @@ export default function RiskSimulatorApp() {
 
       <div className="notes mt-8">
         <p><strong>Notes</strong>: Likelihoods are per-risk independent Bernoulli events. Delays are sampled from a Triangular(min, mode, max) when the risk occurs. Success = not killed & total delay ≤ Slack.</p>
+      </div>
+
+      {/* Charts */}
+      <div className="charts-grid mt-6">
+        <div className="chart-card">
+          <div className="chart-title">On-time Delivery Probability</div>
+          <DonutGauge value={results?.successPct || 0} label="On time" />
+        </div>
+
+        <div className="chart-card">
+          <div className="chart-title">Outcomes Breakdown</div>
+          {results ? (
+            <>
+              <StackedBar
+                segments={[
+                  { value: results.successPct, color: '#16a34a', label: 'On-time' },
+                  { value: Math.max(0, 1 - results.killedPct - results.successPct), color: '#2563eb', label: 'Late' },
+                  { value: results.killedPct, color: '#dc2626', label: 'Killed' },
+                ]}
+              />
+              <div className="legend">
+                <span className="legend-item"><span className="legend-swatch" style={{ background: '#16a34a' }} /> On-time</span>
+                <span className="legend-item"><span className="legend-swatch" style={{ background: '#2563eb' }} /> Late</span>
+                <span className="legend-item"><span className="legend-swatch" style={{ background: '#dc2626' }} /> Killed</span>
+              </div>
+            </>
+          ) : <div className="meta">Run a simulation to see the breakdown.</div>}
+        </div>
+
+        <div className="chart-card">
+          <div className="chart-title">Delay Distribution (late runs)</div>
+          {results?.lateBins && results.lateBins.length > 0 && results.lateMax && results.lateMax > 0 ? (
+            <Histogram bins={results.lateBins} maxX={results.lateMax} xLabel="Days beyond slack" />
+          ) : (
+            <div className="meta">No late runs — nothing to show.</div>
+          )}
+        </div>
+
+        <div className="chart-card">
+          <div className="chart-title">Delay CDF (late runs)</div>
+          {results?.lateBins && results.lateBins.length > 0 && results.lateMax && results.lateMax > 0 ? (
+            <CDF bins={results.lateBins} maxX={results.lateMax} xLabel="Days beyond slack" />
+          ) : (
+            <div className="meta">No late runs — nothing to show.</div>
+          )}
+        </div>
+
+        <div className="chart-card" style={{ gridColumn: '1 / -1' }}>
+          <div className="chart-title">Risk Impact (expected delay contribution)</div>
+          {impact.length > 0 ? (
+            <HBars items={impact.map(i => ({ name: i.name, value: i.expectedDelay }))} />
+          ) : (
+            <div className="meta">Add risks to see impact ranking.</div>
+          )}
+        </div>
       </div>
     </div>
   );

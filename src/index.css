@@ -43,11 +43,8 @@ body {
 
 .grid-3 {
   display: grid;
-  grid-template-columns: 1fr;
   gap: 16px;
-}
-@media (min-width: 768px) {
-  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
 .stats-grid {

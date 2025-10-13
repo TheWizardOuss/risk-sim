@@ -152,15 +152,17 @@ type HBarProps = {
   items: { name: string; value: number }[]; // already sorted desc
   width?: number;
   height?: number; // auto-rows otherwise
+  formatValue?: (value: number) => string;
 };
 
-export function HBars({ items, width = 420, height }: HBarProps) {
+export function HBars({ items, width = 420, height, formatValue }: HBarProps) {
   const rowH = 24;
   const gap = 10;
   const h = height ?? (items.length * (rowH + gap));
   const max = Math.max(...items.map(i => i.value), 1);
   const pad = { l: 120, r: 12, t: 6, b: 6 };
   const innerW = width - pad.l - pad.r;
+  const fmt = formatValue ?? ((value: number) => value.toFixed(1));
   return (
     <svg width={width} height={h + pad.t + pad.b} role="img" aria-label="Risk impact ranking">
       {items.map((it, idx) => {
@@ -170,7 +172,7 @@ export function HBars({ items, width = 420, height }: HBarProps) {
           <g key={idx}>
             <text x={pad.l - 8} y={y + rowH / 2} textAnchor="end" dominantBaseline="central" fontSize={12} fill="#374151">{it.name}</text>
             <rect x={pad.l} y={y} width={w} height={rowH} fill="#2563eb" rx={4} opacity={0.85} />
-            <text x={pad.l + w + 6} y={y + rowH / 2} dominantBaseline="central" fontSize={11} fill="#6b7280">{it.value.toFixed(1)}</text>
+            <text x={pad.l + w + 6} y={y + rowH / 2} dominantBaseline="central" fontSize={11} fill="#6b7280">{fmt(it.value)}</text>
           </g>
         );
       })}

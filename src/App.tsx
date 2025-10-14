@@ -667,7 +667,12 @@ export default function RiskSimulatorApp() {
         <div className="chart-card">
           <div className="chart-title">Delay CDF (late runs)</div>
           {results?.lateBins && results.lateBins.length > 0 && results.lateMax && results.lateMax > 0 ? (
-            <CDF bins={results.lateBins} maxX={results.lateMax} xLabel="Days beyond slack" />
+            <>
+              <CDF bins={results.lateBins} maxX={results.lateMax} xLabel="Days beyond slack" />
+              <div className="meta" style={{ marginTop: 8 }}>
+                85% of late runs finish within {Math.round(results.p85Late)} days beyond slack; follow the curve to read other thresholds.
+              </div>
+            </>
           ) : (
             <div className="meta">No late runs — nothing to show.</div>
           )}
@@ -685,7 +690,12 @@ export default function RiskSimulatorApp() {
         <div className="chart-card">
           <div className="chart-title">Budget Overrun CDF</div>
           {results?.budgetBins && results.budgetBins.length > 0 && results.budgetMax && results.budgetMax > 0 ? (
-            <CDF bins={results.budgetBins} maxX={results.budgetMax} xLabel="Units beyond budget slack" />
+            <>
+              <CDF bins={results.budgetBins} maxX={results.budgetMax} xLabel="Units beyond budget slack" />
+              <div className="meta" style={{ marginTop: 8 }}>
+                85% of budget overruns stay below {fmtCurrency(results.p85BudgetOverrun)}; trace the line for other percentiles.
+              </div>
+            </>
           ) : (
             <div className="meta">No budget overruns — nothing to show.</div>
           )}

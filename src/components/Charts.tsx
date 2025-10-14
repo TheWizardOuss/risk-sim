@@ -168,11 +168,42 @@ export function HBars({ items, width = 420, height, formatValue }: HBarProps) {
       {items.map((it, idx) => {
         const y = pad.t + idx * (rowH + gap);
         const w = (it.value / max) * innerW;
+        const label = fmt(it.value);
+        const labelGap = 6;
+        const labelApproxWidth = label.length * 7; // rough average character width
+        const barEnd = pad.l + w;
+        const maxLabelStart = width - pad.r;
+
+        let labelX = barEnd + labelGap;
+        let labelAnchor: 'start' | 'end' = 'start';
+        let labelFill = '#6b7280';
+
+        if (labelX + labelApproxWidth > maxLabelStart) {
+          labelAnchor = 'end';
+          labelX = Math.max(barEnd - labelGap, pad.l + 4);
+          labelFill = '#f9fafb';
+
+          if (labelX <= pad.l + 4 && w < 20) {
+            labelAnchor = 'start';
+            labelX = barEnd + labelGap;
+            labelFill = '#6b7280';
+          }
+        }
+
         return (
           <g key={idx}>
             <text x={pad.l - 8} y={y + rowH / 2} textAnchor="end" dominantBaseline="central" fontSize={12} fill="#374151">{it.name}</text>
             <rect x={pad.l} y={y} width={w} height={rowH} fill="#2563eb" rx={4} opacity={0.85} />
-            <text x={pad.l + w + 6} y={y + rowH / 2} dominantBaseline="central" fontSize={11} fill="#6b7280">{fmt(it.value)}</text>
+            <text
+              x={labelX}
+              y={y + rowH / 2}
+              textAnchor={labelAnchor}
+              dominantBaseline="central"
+              fontSize={11}
+              fill={labelFill}
+            >
+              {label}
+            </text>
           </g>
         );
       })}

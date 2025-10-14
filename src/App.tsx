@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { DonutGauge, Histogram, CDF, StackedBar, HBars } from './components/Charts';
+import { ChangeAssessment } from './components/ChangeAssessment';
 
 // ---------- Types ----------
 type Risk = {
@@ -318,6 +319,8 @@ export default function RiskSimulatorApp() {
   const [budgetSlack, setBudgetSlack] = useState(100);
   const [seed, setSeed] = useState<string>("");
   const { run, stop, running, progress, results } = useWorker();
+  const [activeView, setActiveView] = useState<'simulator' | 'change'>('simulator');
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const canAddRow = risks.length < 50;
 
@@ -411,7 +414,7 @@ export default function RiskSimulatorApp() {
     .sort((x, y) => y.expectedCost - x.expectedCost)
     .slice(0, 8);
 
-  return (
+  const simulatorView = (
     <div className="container">
       <h1 className="page-title">Project Risk Simulator</h1>
       <p className="subtitle">Up to 50 risks · 50,000 simulations · Client-side only (no backend)</p>
@@ -722,6 +725,51 @@ export default function RiskSimulatorApp() {
           )}
         </div>
       </div>
+    </div>
+  );
+
+  const navTitle = activeView === 'simulator' ? 'Project Risk Simulator' : 'Change Management Assessment';
+
+  const goTo = (view: 'simulator' | 'change') => {
+    setActiveView(view);
+    setMenuOpen(false);
+  };
+
+  return (
+    <div className={`app-shell${menuOpen ? ' menu-open' : ''}`}>
+      <header className="top-bar">
+        <div className="top-bar-title">{navTitle}</div>
+        <button
+          type="button"
+          className="menu-button"
+          aria-haspopup="true"
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen(prev => !prev)}
+        >
+          <span className="sr-only">Toggle navigation</span>
+          <span className="menu-icon" aria-hidden="true">☰</span>
+        </button>
+        {menuOpen && (
+          <nav className="menu-panel" aria-label="Main">
+            <button
+              type="button"
+              className={`menu-link${activeView === 'simulator' ? ' active' : ''}`}
+              onClick={() => goTo('simulator')}
+            >
+              Project Risk Simulator
+            </button>
+            <button
+              type="button"
+              className={`menu-link${activeView === 'change' ? ' active' : ''}`}
+              onClick={() => goTo('change')}
+            >
+              Change Management Risk Assessment
+            </button>
+          </nav>
+        )}
+      </header>
+      {menuOpen && <div className="menu-overlay" onClick={() => setMenuOpen(false)} />}
+      {activeView === 'simulator' ? simulatorView : <ChangeAssessment />}
     </div>
   );
 }

@@ -90,5 +90,78 @@
         "Coalition strength depends on members sharing a common definition of success so they can actively drive the change together."
       ]
     }
+  },
+  "leadership": {
+    "leadership-1": {
+      "title": "Primary Sponsor Authority",
+      "body": [
+        "The primary sponsor authorizes the change and is accountable for realizing outcomes. Sponsorship level should match change risk.",
+        "High-risk changes call for a senior executive with authority over funding, resources, people, processes, and systems.",
+        "Effective sponsors stay active and visible, build a coalition, and communicate directly with managers and employees."
+      ]
+    },
+    "leadership-2": {
+      "title": "Explaining the Change",
+      "body": [
+        "People want to hear what is changing, why, and the organizational benefits from the leader in charge.",
+        "Sponsors must connect the change to organizational direction and describe risks of not changing."
+      ]
+    },
+    "leadership-3": {
+      "title": "Organizational Vision and Strategy",
+      "body": [
+        "Change projects succeed more often when the organization has a clearly defined vision and strategy."
+      ]
+    },
+    "leadership-4": {
+      "title": "Strategic Alignment",
+      "body": [
+        "A change is aligned when success can be clearly tied to achieving the organization’s strategy."
+      ]
+    },
+    "leadership-5": {
+      "title": "Setting Priorities",
+      "body": [
+        "When multiple initiatives run concurrently, senior leaders must prioritize to allocate limited funds and resources.",
+        "Sometimes lower-priority projects must pause so critical initiatives receive what they need to succeed."
+      ]
+    },
+    "leadership-6": {
+      "title": "Decision Making",
+      "body": [
+        "The primary sponsor owns decisions about scope, schedule, and resources.",
+        "Every project encounters changes; sponsors need visibility to issues and must resolve them quickly."
+      ]
+    },
+    "leadership-7": {
+      "title": "Active and Visible Sponsorship",
+      "body": [
+        "Being active and visible throughout the lifecycle is one of the sponsor’s three key roles.",
+        "Sponsors who show up consistently are seen as transparent, engaged, and committed."
+      ]
+    },
+    "leadership-8": {
+      "title": "Building the Sponsor Coalition",
+      "body": [
+        "Leading a strong sponsor coalition is another key role.",
+        "The primary sponsor mobilizes other leaders to advocate for and lead the change in their areas—critical for enterprise changes.",
+        "The change practitioner maps the coalition and suggests actions, but the sponsor owns executing them."
+      ]
+    },
+    "leadership-9": {
+      "title": "Building Awareness",
+      "body": [
+        "Creating awareness of the need for change is the third key sponsor role.",
+        "Impacted people expect to hear the business rationale and risks from senior leaders.",
+        "A visible sponsor legitimizes the change and signals its priority."
+      ]
+    },
+    "leadership-10": {
+      "title": "Reinforcing Success",
+      "body": [
+        "People want success celebrated by the same leader who launched the change.",
+        "Sponsors should reinforce wins and tackle resistance to avoid the perception that adoption is optional."
+      ]
+    }
   }
 }

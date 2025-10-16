@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { FormEvent } from 'react';
+import type { FormEvent, ReactNode } from 'react';
+import pctQuestionDetailsRaw from '../data/pctQuestionDetails.json';
 
 type Question = {
   id: string;
@@ -17,6 +18,15 @@ type AnswerState = Record<string, number>;
 
 const SCORE_RANGE = [1, 2, 3] as const;
 const MAX_SCORE = 30;
+
+type PCTDetail = {
+  title: string;
+  body: string[];
+};
+
+type PCTDetailMap = Record<string, Record<string, PCTDetail>>;
+
+const pctQuestionDetails = pctQuestionDetailsRaw as PCTDetailMap;
 
 const dimensions: Dimension[] = [
   {
@@ -112,6 +122,8 @@ export function PCTAssessment() {
   const [submitted, setSubmitted] = useState(false);
   const [submitCount, setSubmitCount] = useState(0);
   const resultsRef = useRef<HTMLElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const [activeDetail, setActiveDetail] = useState<{ id: string; detail: PCTDetail } | null>(null);
 
   const totals = useMemo(() => {
     return dimensions.reduce<Record<Dimension['id'], number>>((acc, dimension) => {
@@ -136,6 +148,7 @@ export function PCTAssessment() {
   const handleReset = () => {
     setAnswers(createDefaultAnswers());
     setSubmitted(false);
+    setActiveDetail(null);
   };
 
   useEffect(() => {
@@ -143,6 +156,33 @@ export function PCTAssessment() {
       resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [submitCount]);
+
+  useEffect(() => {
+    if (!activeDetail) return;
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setActiveDetail(null);
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [activeDetail]);
+
+  useEffect(() => {
+    if (activeDetail && closeButtonRef.current) {
+      closeButtonRef.current.focus();
+    }
+  }, [activeDetail]);
+
+  const openDetail = (dimensionId: Dimension['id'], questionId: string) => {
+    const detail = pctQuestionDetails[dimensionId]?.[questionId];
+    if (!detail) return;
+    setActiveDetail({ id: questionId, detail });
+  };
+
+  const closeDetail = () => {
+    setActiveDetail(null);
+  };
 
   const { leadership, success, project, change } = totals;
 
@@ -173,7 +213,17 @@ export function PCTAssessment() {
                   <tr key={question.id}>
                     <td>
                       <span className="question-index">{index + 1}.</span>
-                      <span>{question.text}</span>
+                      {pctQuestionDetails[dimension.id]?.[question.id] ? (
+                        <button
+                          type="button"
+                          className="question-link"
+                          onClick={() => openDetail(dimension.id, question.id)}
+                        >
+                          {question.text}
+                        </button>
+                      ) : (
+                        <span>{question.text}</span>
+                      )}
                     </td>
                     <td>
                       <div className="score-scale" role="radiogroup" aria-label={question.text}>
@@ -268,6 +318,63 @@ export function PCTAssessment() {
             </div>
           </div>
         </section>
+      )}
+
+      {activeDetail && (
+        <div className="modal-overlay" role="presentation" onClick={closeDetail}>
+          <div
+            className="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="pct-detail-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h3 id="pct-detail-title">{activeDetail.detail.title}</h3>
+            <div className="modal-body">
+              {(() => {
+                const sections: ReactNode[] = [];
+                let bulletBuffer: string[] = [];
+                activeDetail.detail.body.forEach((line, idx) => {
+                  if (line.startsWith('- ')) {
+                    bulletBuffer.push(line.slice(2));
+                  } else {
+                    if (bulletBuffer.length > 0) {
+                      sections.push(
+                        <ul key={`list-${idx}`}>
+                          {bulletBuffer.map((item, liIdx) => (
+                            <li key={liIdx}>{item}</li>
+                          ))}
+                        </ul>
+                      );
+                      bulletBuffer = [];
+                    }
+                    sections.push(<p key={`p-${idx}`}>{line}</p>);
+                  }
+                });
+                if (bulletBuffer.length > 0) {
+                  sections.push(
+                    <ul key="list-final">
+                      {bulletBuffer.map((item, liIdx) => (
+                        <li key={liIdx}>{item}</li>
+                      ))}
+                    </ul>
+                  );
+                }
+                return sections;
+              })()}
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-dark"
+                onClick={closeDetail}
+                ref={closeButtonRef}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -1,0 +1,94 @@
+{
+  "success": {
+    "success-1": {
+      "title": "Inputs to the Change Management Process",
+      "body": [
+        "Documented in a business case or project charter that covers:",
+        "- What is the project?",
+        "- Why is the project needed (issues and opportunities)?",
+        "- How will the project solve the problem or address the opportunity?",
+        "- What is the recommended solution?",
+        "- What are the risks if the issues and opportunities are not addressed?",
+        "- When will the solution be implemented?",
+        "- How much money, people and time are required to deliver the solution and realize the benefits?"
+      ]
+    },
+    "success-2": {
+      "title": "Defining Success",
+      "body": [
+        "Success includes both project objectives and organizational benefits.",
+        "The primary sponsor defines success; the change practitioner documents and socializes it.",
+        "To clarify benefits, answer:",
+        "- What is the problem or opportunity?",
+        "- If solved, what benefit(s) result?",
+        "- How will you know the benefits have been realized?"
+      ]
+    },
+    "success-3": {
+      "title": "Project Objectives",
+      "body": [
+        "Objectives describe what the project must achieve and align to organizational strategy.",
+        "Clarify by asking:",
+        "- How will the project help solve the problem or realize the opportunity?",
+        "- What will the project produce or enable?",
+        "- How will you know the objectives are achieved?"
+      ]
+    },
+    "success-4": {
+      "title": "Adoption and Usage Objectives",
+      "body": [
+        "Three people-side factors shape ROI:",
+        "- Speed of adoption",
+        "- Ultimate utilization",
+        "- Proficiency",
+        "Define each factor for your change and set measures/targets. Effective change management improves each factor."
+      ]
+    },
+    "success-5": {
+      "title": "Measures of Success",
+      "body": [
+        "Assign quantitative indicators for every project objective and benefit.",
+        "Leverage existing metrics where possible.",
+        "Without measures, you cannot accurately assess achievement."
+      ]
+    },
+    "success-6": {
+      "title": "Prioritizing Objectives and Benefits",
+      "body": [
+        "Most changes pursue multiple outcomes.",
+        "Prioritization helps teams focus effort and make trade-off decisions when facing scope creep, budget cuts, or delays."
+      ]
+    },
+    "success-7": {
+      "title": "Ownership of Objectives and Benefits",
+      "body": [
+        "The primary sponsor is accountable for achieving objectives and benefits.",
+        "Large changes require delegating ownership to members of the sponsor coalition so they can lead in their domains and deliver results."
+      ]
+    },
+    "success-8": {
+      "title": "People Dependency of Benefits",
+      "body": [
+        "Structured change management captures the people-dependent share of ROI.",
+        "Discuss with sponsors:",
+        "- What percentage of outcomes depends on employee adoption and usage?",
+        "- How much are we investing (budget, people, energy) to drive that adoption?",
+        "Use the answers to calibrate the required investment."
+      ]
+    },
+    "success-9": {
+      "title": "Communicating the Definition of Success",
+      "body": [
+        "Prosci’s 3-Phase Process begins with defining success to anchor outcomes.",
+        "A clear definition positions change management, aligns sponsors and PMs, and supports building Awareness and Desire in ADKAR."
+      ]
+    },
+    "success-10": {
+      "title": "Sponsor Coalition Alignment",
+      "body": [
+        "The primary sponsor leads the sponsor coalition.",
+        "Coalition strength depends on members sharing a common definition of success so they can actively drive the change together."
+      ]
+    }
+  }
+}

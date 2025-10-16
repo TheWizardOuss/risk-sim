@@ -193,8 +193,8 @@ export function PCTAssessment() {
                         })}
                       </div>
                       <div className="score-labels">
-                        <span>Low support (1)</span>
-                        <span>High support (3)</span>
+                        <span>Inadequate (1)</span>
+                        <span>Exceptional (3)</span>
                       </div>
                     </td>
                   </tr>

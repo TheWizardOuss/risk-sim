@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { DonutGauge, Histogram, CDF, StackedBar, HBars } from './components/Charts';
 import { ChangeAssessment } from './components/ChangeAssessment';
+import { PCTAssessment } from './components/PCTAssessment';
 
 // ---------- Types ----------
 type Risk = {
@@ -319,7 +320,7 @@ export default function RiskSimulatorApp() {
   const [budgetSlack, setBudgetSlack] = useState(100);
   const [seed, setSeed] = useState<string>("");
   const { run, stop, running, progress, results } = useWorker();
-  const [activeView, setActiveView] = useState<'simulator' | 'change'>('simulator');
+  const [activeView, setActiveView] = useState<'simulator' | 'change' | 'pct'>('simulator');
   const [menuOpen, setMenuOpen] = useState(false);
 
   const canAddRow = risks.length < 50;
@@ -728,9 +729,13 @@ export default function RiskSimulatorApp() {
     </div>
   );
 
-  const navTitle = activeView === 'simulator' ? 'Project Risk Simulator' : 'Change Management Assessment';
+  const navTitle = activeView === 'simulator'
+    ? 'Project Risk Simulator'
+    : activeView === 'change'
+      ? 'Change Management Assessment'
+      : 'PCT Assessment';
 
-  const goTo = (view: 'simulator' | 'change') => {
+  const goTo = (view: 'simulator' | 'change' | 'pct') => {
     setActiveView(view);
     setMenuOpen(false);
   };
@@ -765,11 +770,18 @@ export default function RiskSimulatorApp() {
             >
               Change Management Risk Assessment
             </button>
+            <button
+              type="button"
+              className={`menu-link${activeView === 'pct' ? ' active' : ''}`}
+              onClick={() => goTo('pct')}
+            >
+              PCT Assessment
+            </button>
           </nav>
         )}
       </header>
       {menuOpen && <div className="menu-overlay" onClick={() => setMenuOpen(false)} />}
-      {activeView === 'simulator' ? simulatorView : <ChangeAssessment />}
+      {activeView === 'simulator' ? simulatorView : activeView === 'change' ? <ChangeAssessment /> : <PCTAssessment />}
     </div>
   );
 }

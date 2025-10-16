@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 
 type Question = {
@@ -62,6 +62,8 @@ export function ChangeAssessment() {
   const [changeAnswers, setChangeAnswers] = useState<AnswerState>(() => createDefaultAnswers(changeCharacteristics));
   const [orgAnswers, setOrgAnswers] = useState<AnswerState>(() => createDefaultAnswers(organisationalAttributes));
   const [submitted, setSubmitted] = useState(false);
+  const [submitCount, setSubmitCount] = useState(0);
+  const resultsRef = useRef<HTMLElement | null>(null);
 
   const changeTotal = useMemo(
     () => changeCharacteristics.reduce((sum, q) => sum + (changeAnswers[q.id] || 0), 0),
@@ -80,7 +82,14 @@ export function ChangeAssessment() {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitted(true);
+    setSubmitCount(count => count + 1);
   };
+
+  useEffect(() => {
+    if (submitCount > 0 && resultsRef.current) {
+      resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [submitCount]);
 
   const quadrantLabel = useMemo(() => {
     const highChange = changeTotal > MID_TOTAL;
@@ -206,7 +215,7 @@ export function ChangeAssessment() {
       </form>
 
       {submitted && (
-        <section className="assessment-results card">
+        <section className="assessment-results card" ref={resultsRef}>
           <h2>Risk Position</h2>
           <p className="meta">Scores: Change Characteristics {changeTotal}, Organizational Attributes {orgTotal}</p>
           <div className="matrix-wrapper">

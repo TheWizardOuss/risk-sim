@@ -494,3 +494,140 @@ input[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none; margin: 0;
 }
 input[type=number] { -moz-appearance: textfield; }
+
+/* --- PCT Assessment --- */
+.pct-results {
+  margin-top: 32px;
+}
+
+.pct-results-header {
+  margin-bottom: 16px;
+}
+
+.pct-results-header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.pct-triangle-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0 16px;
+}
+
+.pct-triangle {
+  position: relative;
+  width: 340px;
+  height: 320px;
+}
+
+.pct-triangle::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #dbeafe;
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  border-radius: 18px;
+}
+
+.pct-inner-triangle {
+  position: absolute;
+  inset: 92px 90px 60px;
+  background: #ffffff;
+  clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
+  opacity: 0.95;
+  border-radius: 14px;
+}
+
+.pct-score-node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.pct-node-top {
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.pct-node-left {
+  bottom: 26px;
+  left: 28px;
+}
+
+.pct-node-right {
+  bottom: 26px;
+  right: 28px;
+}
+
+.pct-node-center {
+  top: 54%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.pct-score-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 54px;
+  padding: 6px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 999px;
+  color: #ffffff;
+  box-shadow: var(--shadow);
+}
+
+.pct-score-pill.high { background: #b91c1c; }
+.pct-score-pill.medium { background: #f59e0b; color: #1f2937; }
+.pct-score-pill.low { background: #15803d; }
+
+.pct-score-caption {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.pct-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: #374151;
+}
+
+.pct-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pct-legend-swatch {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.pct-legend-swatch.high { background: #b91c1c; }
+.pct-legend-swatch.medium { background: #f59e0b; }
+.pct-legend-swatch.low { background: #15803d; }
+
+@media (max-width: 480px) {
+  .pct-triangle {
+    width: 260px;
+    height: 250px;
+  }
+  .pct-inner-triangle {
+    inset: 70px 70px 46px;
+  }
+  .pct-node-left,
+  .pct-node-right {
+    bottom: 18px;
+  }
+}

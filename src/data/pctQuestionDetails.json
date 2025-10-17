@@ -91,6 +91,190 @@
       ]
     }
   },
+  "project": {
+    "project-1": {
+      "title": "Defining the Change",
+      "body": [
+        "Early in the lifecycle the nature of the change and who is impacted may be unclear, but planning must clarify these points.",
+        "Successful changes define:",
+        "- The nature of the change.",
+        "- The impact on organization, processes, systems, and roles.",
+        "- Which individuals and groups are impacted, how, and to what degree."
+      ]
+    },
+    "project-2": {
+      "title": "Project Objectives",
+      "body": [
+        "Objectives align with vision and strategy so that achieving them delivers organizational benefits.",
+        "Specific objectives enable measures and targets and contribute to the project definition of success.",
+        "They answer:",
+        "- How does the project solve the problem or realize the opportunity?",
+        "- What will the project produce or enable?",
+        "- How will you know the objectives are achieved?"
+      ]
+    },
+    "project-3": {
+      "title": "Project Scope",
+      "body": [
+        "Scope defines the work needed to deliver expected outcomes and identifies impacted processes, systems, tools, and structures.",
+        "Scope management clarifies what is included versus excluded; capture it early in the lifecycle."
+      ]
+    },
+    "project-4": {
+      "title": "Role of the Project Manager",
+      "body": [
+        "Projects designate a project manager to own planning and control.",
+        "In the Prosci Methodology the project manager:",
+        "- Designs, develops, and delivers the technical solution with adoption in mind.",
+        "- Collaborates with the change practitioner on a unified approach.",
+        "A strong partnership between project manager and change practitioner is essential to achieving objectives and benefits."
+      ]
+    },
+    "project-5": {
+      "title": "Schedules and Milestones",
+      "body": [
+        "The schedule sets start and finish timeframes; milestones mark major activities or deliverables.",
+        "Change practitioners align ADKAR milestones to project milestones—for example, Ability aligning with go-live or each release."
+      ]
+    },
+    "project-6": {
+      "title": "Work Breakdown Structure",
+      "body": [
+        "A WBS breaks the work into manageable tasks, often in a tree structure, so the team can visualize dependencies and plan execution.",
+        "A solid WBS supports project managers, team members, and stakeholders in understanding complex efforts."
+      ]
+    },
+    "project-7": {
+      "title": "Resource Planning",
+      "body": [
+        "Resources span people, materials, finances, and time.",
+        "The schedule and WBS identify who and what is needed, and when, throughout the lifecycle."
+      ]
+    },
+    "project-8": {
+      "title": "Progress Cadence",
+      "body": [
+        "Regular meetings to track progress and resolve issues:",
+        "- Keep sponsors and stakeholders informed.",
+        "- Surface and remove barriers.",
+        "- Create accountability across the sponsor, project team, and stakeholders."
+      ]
+    },
+    "project-9": {
+      "title": "Shared Definition of Success",
+      "body": [
+        "Project management and change management share the goal of achieving objectives and realizing benefits.",
+        "Prosci research shows integrated disciplines deliver higher success rates and greater change management effectiveness.",
+        "Integration requires the project team to understand the value of change management."
+      ]
+    },
+    "project-10": {
+      "title": "Integrated Planning",
+      "body": [
+        "Project plans focus on technical delivery; change plans focus on people adoption.",
+        "Integration yields:",
+        "- Shared objectives.",
+        "- A proactive approach.",
+        "- Better sequencing and alignment.",
+        "- Stronger information exchange.",
+        "For success, change management must understand project implications and timing, while the project team needs people ready to adopt when the solution ships."
+      ]
+    }
+  },
+  "change": {
+    "change-1": {
+      "title": "Structured Approach",
+      "body": [
+        "Change management has become more structured over time; using a defined methodology is a top success factor in Prosci research since 2003.",
+        "Organizations with a structured approach see higher change management effectiveness because it creates formal process, common language, and consistent application."
+      ]
+    },
+    "change-2": {
+      "title": "Change Characteristics Assessment",
+      "body": [
+        "Avoid one-size-fits-all: tailor strategy to the nature of the change.",
+        "Phase 1 – Prepare Approach uses the Change Characteristics Assessment to evaluate scope, amount, and impact on a spectrum from incremental to disruptive.",
+        "Results inform people risk and help customize and scale plans."
+      ]
+    },
+    "change-3": {
+      "title": "Organizational Attributes Assessment",
+      "body": [
+        "Also avoid one-size-fits-all when considering impacted people and the organization.",
+        "Phase 1 assesses values, culture, capacity, leadership style, and change history to determine readiness.",
+        "Combine these results with change characteristics to gauge people risk and tailor the strategy."
+      ]
+    },
+    "change-4": {
+      "title": "People-Side ROI Factors",
+      "body": [
+        "Prosci identifies three people-side factors driving ROI:",
+        "- Speed of adoption",
+        "- Ultimate utilization",
+        "- Proficiency",
+        "Effective change management boosts each factor; define what they mean and set targets for your change."
+      ]
+    },
+    "change-5": {
+      "title": "Sponsor Coalition Strength",
+      "body": [
+        "Small changes might need only one sponsor, but most require a coalition covering all impacted areas.",
+        "The Sponsor Coalition Map highlights functional groups plus formal/informal influencers.",
+        "Coalition strength reflects members’ commitment to leading the change in their domains—critical to realizing outcomes."
+      ]
+    },
+    "change-6": {
+      "title": "Phase 1 – Prepare Approach",
+      "body": [
+        "This factor gauges completion of Phase 1 whose purpose is to position the change for success with a tailored strategy and committed sponsorship.",
+        "Deliverable: Change Management Strategy built by completing three stages:",
+        "- Define Success (What are we trying to achieve?)",
+        "- Define Impact (Who changes and how?)",
+        "- Define Approach (What will it take?)",
+        "Engage broad stakeholders so they own the strategy."
+      ]
+    },
+    "change-7": {
+      "title": "Resourcing Change Management",
+      "body": [
+        "Determine resource needs by considering availability, scale, complexity, people risk, and project timeline.",
+        "Prosci research links dedicated and sufficient resources to higher effectiveness.",
+        "Select people with strong communication, change skills, flexibility, and interpersonal strengths.",
+        "Prepare the team by teaching the business context, desired outcomes, and change management practices."
+      ]
+    },
+    "change-8": {
+      "title": "Phase 2 – Manage Change: Plan and Act",
+      "body": [
+        "Phase 2 aims to achieve adoption by creating, implementing, and flexing plans that guide ADKAR transitions.",
+        "Plan and Act answers: What will we do to prepare, equip, and support people?",
+        "For small changes the ADKAR Blueprint may suffice; larger changes expand into core plans such as:",
+        "- Sponsor and People Manager Role Plans",
+        "- Communications and Training Activity Plans",
+        "Tailor each plan to the change context."
+      ]
+    },
+    "change-9": {
+      "title": "Phase 2 – Track and Adapt",
+      "body": [
+        "Also in Phase 2, Track Performance asks “How are we doing?” and Adapt Actions asks “What adjustments are needed?”",
+        "Monitoring ADKAR progress reveals when Desire may drop or other building blocks stall, enabling timely course correction.",
+        "Measuring progress supports sustainment of outcomes."
+      ]
+    },
+    "change-10": {
+      "title": "Phase 3 – Sustain Outcomes",
+      "body": [
+        "Phase 3 ensures adoption sticks and value is realized.",
+        "Stages:",
+        "- Review Performance (Where are we now?)",
+        "- Activate Sustainment (What actions ensure stickiness?)",
+        "- Transfer Ownership (Who owns sustaining outcomes?)",
+        "Deliverable: Change Management Closeout that equips the organization to own the change.",
+        "Activate Sustainment by identifying gaps and priorities, defining actions/roles/timelines, and preparing/activating sustainment roles."
+      ]
+    }
+  },
   "leadership": {
     "leadership-1": {
       "title": "Primary Sponsor Authority",

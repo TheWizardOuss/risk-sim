@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { DonutGauge, Histogram, CDF, StackedBar, HBars } from './components/Charts';
 import { ChangeAssessment } from './components/ChangeAssessment';
 import { PCTAssessment } from './components/PCTAssessment';
+import { ADKAssessment } from './components/ADKAssessment';
 
 // ---------- Types ----------
 type Risk = {
@@ -320,7 +321,7 @@ export default function RiskSimulatorApp() {
   const [budgetSlack, setBudgetSlack] = useState(100);
   const [seed, setSeed] = useState<string>("");
   const { run, stop, running, progress, results } = useWorker();
-  const [activeView, setActiveView] = useState<'simulator' | 'change' | 'pct'>('simulator');
+  const [activeView, setActiveView] = useState<'simulator' | 'change' | 'pct' | 'adk'>('simulator');
   const [menuOpen, setMenuOpen] = useState(false);
 
   const canAddRow = risks.length < 50;
@@ -733,9 +734,11 @@ export default function RiskSimulatorApp() {
     ? 'Project Risk Simulator'
     : activeView === 'change'
       ? 'Change Management Assessment'
-      : 'PCT Assessment';
+      : activeView === 'pct'
+        ? 'PCT Assessment'
+        : 'ADKAR Assessment';
 
-  const goTo = (view: 'simulator' | 'change' | 'pct') => {
+  const goTo = (view: 'simulator' | 'change' | 'pct' | 'adk') => {
     setActiveView(view);
     setMenuOpen(false);
   };
@@ -777,11 +780,24 @@ export default function RiskSimulatorApp() {
             >
               PCT Assessment
             </button>
+            <button
+              type="button"
+              className={`menu-link${activeView === 'adk' ? ' active' : ''}`}
+              onClick={() => goTo('adk')}
+            >
+              ADKAR Assessment
+            </button>
           </nav>
         )}
       </header>
       {menuOpen && <div className="menu-overlay" onClick={() => setMenuOpen(false)} />}
-      {activeView === 'simulator' ? simulatorView : activeView === 'change' ? <ChangeAssessment /> : <PCTAssessment />}
+      {activeView === 'simulator'
+        ? simulatorView
+        : activeView === 'change'
+          ? <ChangeAssessment />
+          : activeView === 'pct'
+            ? <PCTAssessment />
+            : <ADKAssessment />}
     </div>
   );
 }

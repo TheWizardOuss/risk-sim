@@ -727,17 +727,32 @@ input[type=number] { -moz-appearance: textfield; }
   font-size: 24px;
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
+.barrier-letter.level-critical {
+  background: rgba(185, 28, 28, 0.12);
+  color: #991b1b;
+  border-color: rgba(185, 28, 28, 0.4);
+}
+.barrier-letter.level-warning {
+  background: rgba(245, 158, 11, 0.16);
+  color: #92400e;
+  border-color: rgba(245, 158, 11, 0.4);
+}
+.barrier-letter.level-positive {
+  background: rgba(21, 128, 61, 0.18);
+  color: #065f46;
+  border-color: rgba(21, 128, 61, 0.4);
+}
 .barrier-letter.active {
   color: #ffffff;
   border-color: transparent;
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18);
 }
-.barrier-letter.active.critical { background: #b91c1c; }
-.barrier-letter.active.warning {
+.barrier-letter.active.level-critical { background: #b91c1c; }
+.barrier-letter.active.level-warning {
   background: #f59e0b;
   color: #1f2937;
 }
-.barrier-letter.active.positive { background: #15803d; }
+.barrier-letter.active.level-positive { background: #15803d; }
 .barrier-score {
   margin-top: 6px;
   font-size: 13px;
@@ -766,10 +781,19 @@ input[type=number] { -moz-appearance: textfield; }
   font-size: 14px;
   color: var(--text);
 }
+.barrier-message-success {
+  color: #065f46;
+  background: rgba(16, 185, 129, 0.12);
+  padding: 12px 14px;
+  border-radius: 12px;
+}
 .barrier-instructions {
   margin: 0;
   font-size: 13px;
   color: var(--muted);
+}
+.barrier-instructions.dirty {
+  color: #92400e;
 }
 
 .modal-overlay {

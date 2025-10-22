@@ -117,9 +117,22 @@ const levelForScore = (score: Score): BarrierLevel => {
   return 'positive';
 };
 
+type ElementScoreDetails = {
+  element: Element;
+  average: number;
+  rounded: Score;
+  level: BarrierLevel;
+};
+
+type SubmittedSnapshot = {
+  scores: ElementScoreDetails[];
+  barrier: ElementScoreDetails | null;
+};
+
 export function ADKAssessment() {
   const [answers, setAnswers] = useState<Record<string, Score>>(() => createDefaultAnswers());
-  const [submitted, setSubmitted] = useState(false);
+  const [submittedData, setSubmittedData] = useState<SubmittedSnapshot | null>(null);
+  const [isDirty, setIsDirty] = useState(false);
 
   const elementScores = useMemo(() => {
     return elements.map((element) => {
@@ -127,38 +140,41 @@ export function ADKAssessment() {
       const total = values.reduce((sum, value) => sum + value, 0);
       const average = values.length > 0 ? total / values.length : 0;
       const rounded = clampScore(average);
-      return { element, average, rounded };
+      const level = levelForScore(rounded);
+      return { element, average, rounded, level };
     });
   }, [answers]);
 
-  const barrierPoint = useMemo(() => {
-    if (elementScores.length === 0) return null;
-    let candidate = elementScores[0];
-    for (let i = 1; i < elementScores.length; i++) {
-      if (elementScores[i].average < candidate.average) {
-        candidate = elementScores[i];
-      }
-    }
-    return {
-      element: candidate.element,
-      average: candidate.average,
-      rounded: candidate.rounded,
-      level: levelForScore(candidate.rounded),
-    };
-  }, [elementScores]);
-
   const handleScore = (questionId: string, score: Score) => {
     setAnswers((prev) => ({ ...prev, [questionId]: score }));
+    if (submittedData) {
+      setIsDirty(true);
+    }
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSubmitted(true);
+    if (elementScores.length === 0) return;
+    const scoresSnapshot = elementScores.map((score) => ({ ...score }));
+    let barrierCandidate: ElementScoreDetails | null = null;
+    for (let i = 0; i < scoresSnapshot.length; i++) {
+      const current = scoresSnapshot[i];
+      if (!barrierCandidate || current.average < barrierCandidate.average) {
+        barrierCandidate = current;
+      }
+    }
+    const barrier =
+      barrierCandidate && barrierCandidate.level !== 'positive'
+        ? barrierCandidate
+        : null;
+    setSubmittedData({ scores: scoresSnapshot, barrier });
+    setIsDirty(false);
   };
 
   const handleReset = () => {
     setAnswers(createDefaultAnswers());
-    setSubmitted(false);
+    setSubmittedData(null);
+    setIsDirty(false);
   };
 
   return (
@@ -244,37 +260,60 @@ export function ADKAssessment() {
               <h2>Barrier Point</h2>
             </div>
             <div className="barrier-grid">
-              {elementScores.map(({ element, average }) => {
-                const isActive = submitted && barrierPoint?.element.id === element.id;
-                const level = isActive ? barrierPoint?.level ?? 'warning' : undefined;
+              {elements.map((element) => {
+                const snapshot = submittedData?.scores.find((entry) => entry.element.id === element.id) ?? null;
+                const level = snapshot?.level;
+                const isActive = Boolean(submittedData?.barrier && submittedData.barrier.element.id === element.id);
+                const classNames = [
+                  'barrier-letter',
+                  level ? `level-${level}` : '',
+                  isActive ? 'active' : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ');
+                const displayScore = snapshot ? formatScore(snapshot.average) : '—';
+                const aria = snapshot
+                  ? `${element.title} score ${displayScore} out of 5`
+                  : `${element.title} score not submitted yet`;
                 return (
                   <div key={element.id} className="barrier-cell">
                     <div
-                      className={`barrier-letter${isActive ? ` active ${level}` : ''}`}
-                      aria-label={`${element.title} score ${formatScore(average)} out of 5`}
+                      className={classNames}
+                      aria-label={aria}
                     >
                       {element.label}
                     </div>
-                    <div className="barrier-score">{formatScore(average)}</div>
+                    <div className="barrier-score">{displayScore}</div>
                   </div>
                 );
               })}
             </div>
-            {submitted && barrierPoint ? (
+            {!submittedData && (
+              <p className="barrier-instructions">
+                Submit the assessment to reveal the lowest-scoring ADKAR element.
+              </p>
+            )}
+            {submittedData && submittedData.barrier && (
               <>
                 <div className="barrier-detail">
                   <div className="barrier-detail-title">
-                    Barrier Point: {barrierPoint.element.title}
+                    Barrier Point: {submittedData.barrier.element.title}
                   </div>
                   <div className="barrier-detail-score">
-                    {formatScore(barrierPoint.average)} / 5
+                    {formatScore(submittedData.barrier.average)} / 5
                   </div>
                 </div>
-                <p className="barrier-message">{barrierPoint.element.focus}</p>
+                <p className="barrier-message">{submittedData.barrier.element.focus}</p>
               </>
-            ) : (
-              <p className="barrier-instructions">
-                Submit the assessment to reveal the lowest-scoring ADKAR element.
+            )}
+            {submittedData && !submittedData.barrier && (
+              <p className="barrier-message barrier-message-success">
+                All ADKAR elements are scoring 4 or higher. No barrier point detected.
+              </p>
+            )}
+            {submittedData && isDirty && (
+              <p className="barrier-instructions dirty">
+                Scores changed. Submit again to refresh the barrier point.
               </p>
             )}
           </div>

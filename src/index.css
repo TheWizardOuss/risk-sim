@@ -637,12 +637,12 @@ input[type=number] { -moz-appearance: textfield; }
   border: none;
   padding: 0;
   font: inherit;
-  color: var(--accent-600);
+  color: inherit;
   cursor: pointer;
   text-align: left;
-  text-decoration: underline;
+  text-decoration: none;
 }
-.question-link:hover { color: #1e40af; }
+.question-link:hover { color: inherit; }
 .question-link:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .modal-overlay {

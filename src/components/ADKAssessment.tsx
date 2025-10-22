@@ -127,6 +127,8 @@ type ElementScoreDetails = {
 type SubmittedSnapshot = {
   scores: ElementScoreDetails[];
   barrier: ElementScoreDetails | null;
+  highlightAllPositive: boolean;
+  byId: Record<ElementId, ElementScoreDetails>;
 };
 
 export function ADKAssessment() {
@@ -156,18 +158,29 @@ export function ADKAssessment() {
     event.preventDefault();
     if (elementScores.length === 0) return;
     const scoresSnapshot = elementScores.map((score) => ({ ...score }));
+    const highlightAllPositive = scoresSnapshot.every((item) => item.rounded >= 4);
+
     let barrierCandidate: ElementScoreDetails | null = null;
-    for (let i = 0; i < scoresSnapshot.length; i++) {
-      const current = scoresSnapshot[i];
-      if (!barrierCandidate || current.average < barrierCandidate.average) {
-        barrierCandidate = current;
+    if (!highlightAllPositive) {
+      for (let i = 0; i < scoresSnapshot.length; i++) {
+        const current = scoresSnapshot[i];
+        if (!barrierCandidate || current.rounded < barrierCandidate.rounded) {
+          barrierCandidate = current;
+        }
       }
     }
-    const barrier =
-      barrierCandidate && barrierCandidate.level !== 'positive'
-        ? barrierCandidate
-        : null;
-    setSubmittedData({ scores: scoresSnapshot, barrier });
+
+    const byId = scoresSnapshot.reduce<Record<ElementId, ElementScoreDetails>>((acc, item) => {
+      acc[item.element.id] = item;
+      return acc;
+    }, {} as Record<ElementId, ElementScoreDetails>);
+
+    setSubmittedData({
+      scores: scoresSnapshot,
+      barrier: barrierCandidate,
+      highlightAllPositive,
+      byId,
+    });
     setIsDirty(false);
   };
 
@@ -261,16 +274,17 @@ export function ADKAssessment() {
             </div>
             <div className="barrier-grid">
               {elements.map((element) => {
-                const snapshot = submittedData?.scores.find((entry) => entry.element.id === element.id) ?? null;
-                const level = snapshot?.level;
-                const isActive = Boolean(submittedData?.barrier && submittedData.barrier.element.id === element.id);
-                const classNames = [
-                  'barrier-letter',
-                  level ? `level-${level}` : '',
-                  isActive ? 'active' : '',
-                ]
-                  .filter(Boolean)
-                  .join(' ');
+                const snapshot = submittedData?.byId[element.id] ?? null;
+                const isBarrier = Boolean(submittedData?.barrier && submittedData.barrier.element.id === element.id);
+                const highlightAll = submittedData?.highlightAllPositive ?? false;
+                const classNames = ['barrier-letter'];
+
+                if (highlightAll) {
+                  classNames.push('active', 'level-positive');
+                } else if (isBarrier && submittedData?.barrier) {
+                  classNames.push('active', `level-${submittedData.barrier.level}`);
+                }
+
                 const displayScore = snapshot ? formatScore(snapshot.average) : '—';
                 const aria = snapshot
                   ? `${element.title} score ${displayScore} out of 5`
@@ -278,7 +292,7 @@ export function ADKAssessment() {
                 return (
                   <div key={element.id} className="barrier-cell">
                     <div
-                      className={classNames}
+                      className={classNames.join(' ')}
                       aria-label={aria}
                     >
                       {element.label}
@@ -293,7 +307,7 @@ export function ADKAssessment() {
                 Submit the assessment to reveal the lowest-scoring ADKAR element.
               </p>
             )}
-            {submittedData && submittedData.barrier && (
+            {submittedData && submittedData.barrier && !submittedData.highlightAllPositive && (
               <>
                 <div className="barrier-detail">
                   <div className="barrier-detail-title">
@@ -306,7 +320,7 @@ export function ADKAssessment() {
                 <p className="barrier-message">{submittedData.barrier.element.focus}</p>
               </>
             )}
-            {submittedData && !submittedData.barrier && (
+            {submittedData && submittedData.highlightAllPositive && (
               <p className="barrier-message barrier-message-success">
                 All ADKAR elements are scoring 4 or higher. No barrier point detected.
               </p>

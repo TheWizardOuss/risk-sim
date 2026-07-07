@@ -300,6 +300,19 @@ const emptyRisk = (): Risk => ({
   notes: "",
 });
 
+function HelpIcon({ text }: { text: string }) {
+  return (
+    <span className="help-tooltip">
+      <button type="button" className="help-icon" aria-label={text}>
+        ?
+      </button>
+      <span className="help-bubble" role="tooltip">
+        {text}
+      </span>
+    </span>
+  );
+}
+
 const sampleRisks: Risk[] = [
   { name: "Minor bugs backlog", likelihood: 50, min: 2, mode: 4, max: 7, costMin: 10, costMode: 18, costMax: 32, kill: 0, notes: "Nuisance work slows testing" },
   { name: "Vendor part late", likelihood: 25, min: 10, mode: 20, max: 40, costMin: 25, costMode: 40, costMax: 70, kill: 0, notes: "External dependency" },
@@ -319,7 +332,6 @@ export default function RiskSimulatorApp() {
   const [iterations, setIterations] = useState(20000);
   const [slack, setSlack] = useState(15);
   const [budgetSlack, setBudgetSlack] = useState(100);
-  const [seed, setSeed] = useState<string>("");
   const { run, stop, running, progress, results } = useWorker();
   const [activeView, setActiveView] = useState<'simulator' | 'change' | 'pct' | 'adk'>('simulator');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -372,8 +384,7 @@ export default function RiskSimulatorApp() {
     const iters = Math.max(1, Math.min(50000, Math.floor(iterations)));
     const slackDays = Math.max(0, Number(slack));
     const budgetSlackValue = Math.max(0, Number(budgetSlack));
-    const sd = seed.trim() !== "" ? Number(seed) : Math.floor(Math.random() * 1e9);
-    run(prepared as any, iters, slackDays, budgetSlackValue, sd);
+    run(prepared as any, iters, slackDays, budgetSlackValue);
   };
 
   const clearRow = (idx: number) => {
@@ -423,24 +434,28 @@ export default function RiskSimulatorApp() {
 
       <div className="grid-3 mb-6">
         <div className="card">
-          <label className="label">Slack (days)</label>
+          <label className="label">
+            Slack (days)
+            <HelpIcon text="How many days of delay the project can absorb before it is considered late." />
+          </label>
           <input type="number" className="input" value={slack}
                  onChange={(e) => setSlack(Number(e.target.value))} min={0} />
         </div>
         <div className="card">
-          <label className="label">Budget Slack (EUR)</label>
+          <label className="label">
+            Budget Slack (EUR)
+            <HelpIcon text="How much extra budget the project can absorb before it is considered over budget." />
+          </label>
           <input type="number" className="input" value={budgetSlack}
                  onChange={(e) => setBudgetSlack(Number(e.target.value))} min={0} />
         </div>
         <div className="card">
-          <label className="label">Iterations (max 50,000)</label>
+          <label className="label">
+            Iterations (max 50,000)
+            <HelpIcon text="How many trial runs the simulator performs. More runs usually make the results more stable." />
+          </label>
           <input type="number" className="input" value={iterations}
                  onChange={(e) => setIterations(Number(e.target.value))} min={100} max={50000} step={100} />
-        </div>
-        <div className="card">
-          <label className="label">Random Seed (optional)</label>
-          <input type="number" className="input" value={seed}
-                 onChange={(e) => setSeed(e.target.value)} placeholder="e.g., 12345" />
         </div>
       </div>
 
@@ -772,20 +787,6 @@ export default function RiskSimulatorApp() {
               onClick={() => goTo('change')}
             >
               Change Management Risk Assessment
-            </button>
-            <button
-              type="button"
-              className={`menu-link${activeView === 'pct' ? ' active' : ''}`}
-              onClick={() => goTo('pct')}
-            >
-              PCT Assessment
-            </button>
-            <button
-              type="button"
-              className={`menu-link${activeView === 'adk' ? ' active' : ''}`}
-              onClick={() => goTo('adk')}
-            >
-              ADKAR Assessment
             </button>
           </nav>
         )}
